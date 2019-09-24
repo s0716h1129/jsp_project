@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.study.jsp.command.BContentCommand;
+import com.study.jsp.command.BListCommand;
+import com.study.jsp.command.BListSerchCommand;
 import com.study.jsp.command.BWriteCommand;
 import com.study.jsp.command.PCommand;
 
@@ -64,9 +67,17 @@ public class PFrontController extends HttpServlet {
 			command.execute(request, response);
 			viewPage = "bList.do";
 		} else if (com.equals("/bList.do")) {
-//			command = new BListCommand();
-//			command.execute(request, response);
-//			viewPage = "BList.jsp";
+			command = new BListCommand();
+			command.execute(request, response);
+			viewPage = "BList.jsp";
+		} else if (com.contentEquals("/bListSerch.do")) {
+			command = new BListSerchCommand();
+			command.execute(request, response);
+			viewPage = "BList.jsp";
+		}else if (com.equals("/bContent_view.do")) {
+			command = new BContentCommand();
+			command.execute(request, response);
+			viewPage = "BContent_view.jsp";
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);
