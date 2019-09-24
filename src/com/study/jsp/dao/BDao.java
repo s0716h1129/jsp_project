@@ -186,7 +186,7 @@ public class BDao {
 	}
 
 	public BDto contentView(String strID) {
-		//upHit(strID);
+		upHit(strID);
 		BDto dto = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -236,6 +236,200 @@ public class BDao {
 			}
 		}
 		return dto;
+		
+	}
+
+	private void upHit(String strID) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			con = dataSource.getConnection();
+			String query = "update mvc_board set bHit = bHit + 1 where bId = ?";
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, strID);
+			
+			int rn = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(con != null) con.close();
+			} catch (Exception e2){
+				e2.printStackTrace();
+			}
+		}
+		
+	}
+
+	public void modify(String bId, String bName, String bTitle, String bContent) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		String query = "update mvc_board " +
+					   "	set bName = ?, " +
+					   "		bTitle = ?, " +
+					   "		bContent = ?" +
+					   "where bId = ?";
+		
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, bName);
+			pstmt.setString(2, bTitle);
+			pstmt.setString(3, bContent);
+			pstmt.setString(4, bId);
+			
+			int rn = pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+	}
+
+	public BDto reply_view(String str) {
+		BDto dto =null;
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet resultSet = null;
+		
+		try {
+			con = dataSource.getConnection();
+			String query = "select * from mvc_board where bId = ?";
+			pstmt = con.prepareStatement(query);
+			pstmt.setInt(1, Integer.parseInt(str));
+			resultSet = pstmt.executeQuery();
+			
+			if(resultSet.next()) {
+				int bId = resultSet.getInt("bId");
+				String bName = resultSet.getString("bName");
+				String bTitle = resultSet.getString("bTitle");
+				String bContent = resultSet.getString("bContent");
+				Timestamp bDate = resultSet.getTimestamp("bDate");
+				int bHit = resultSet.getInt("bHit");
+				int bGroup = resultSet.getInt("bGroup");
+				int bStep = resultSet.getInt("bStep");
+				int bIndent = resultSet.getInt("bIndent");
+				String bType = resultSet.getString("bType");
+				
+				dto = new BDto(bId, bName, bTitle, bContent, bDate, bHit, bGroup, bStep, bIndent, bType);
+			
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(con != null) con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return dto;
+	}
+
+	public void reply(String bId, String bName, String bTitle, String bContent, String bGroup, String bStep,
+			String bIndent, String bType) 
+	{
+		replyshape(bGroup, bStep);
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			con = dataSource.getConnection();
+			String query = "insert into mvc_board " +
+							" (bId, bName, bTitle, bContent, bGroup, bStep, bIndent, bType) " +
+							" values (mvc_board_seq.nextval, ?, ?, ?, ?, ?, ?, ?)";
+			pstmt = con.prepareStatement(query);
+			
+			pstmt.setString(1, bName);
+			pstmt.setString(2, bTitle);
+			pstmt.setString(3, bContent);
+			pstmt.setInt(4, Integer.parseInt(bGroup));
+			pstmt.setInt(5, Integer.parseInt(bStep) + 1);
+			pstmt.setInt(6, Integer.parseInt(bIndent) + 1);
+			pstmt.setString(7, bType);
+			
+			int rn = pstmt.executeUpdate();
+			
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(con != null) con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+	}
+	
+	private void replyshape(String strGroup, String strStep) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			con = dataSource.getConnection();
+			String query = " update mvc_board " +
+							"	set bStep = bstep + 1" +
+							"	where bGroup = ? and bStep > ?";
+			pstmt = con.prepareStatement(query);
+			pstmt.setInt(1,  Integer.parseInt(strGroup));
+			pstmt.setInt(2,  Integer.parseInt(strStep));
+			int rn = pstmt.executeUpdate();	
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+		finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(con != null) con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	public void delete(String bId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			con = dataSource.getConnection();
+			String query = "delete from mvc_board where bId = ?";
+			pstmt = con.prepareStatement(query);
+			pstmt.setInt(1, Integer.parseInt(bId));
+			int rn = pstmt.executeUpdate();
+			
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(con != null) con.close();
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (Exception e2){
+				e2.printStackTrace();
+			}
+		}
 		
 	}
 

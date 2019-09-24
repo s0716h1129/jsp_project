@@ -34,10 +34,10 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<a href="bModify_view.do?bId=${bContent_view.bId}">수정</a> &nbsp;&nbsp;
+				<a href="bModify_view.do?bId=${BContent_view.bId}">수정</a> &nbsp;&nbsp;
 				<a href="bList.do">목록보기</a> &nbsp;&nbsp;
-				<a href="bDelete.do?bId=${bContent_view.bId}">삭제</a> &nbsp;&nbsp;
-				<a href="bReply_view.do?bId=${bContent_view.bId}">답변</a> &nbsp;&nbsp;
+				<a href="bDelete.do?bId=${BContent_view.bId}">삭제</a> &nbsp;&nbsp;
+				<a href="bReply_view.do?bId=${BContent_view.bId}">답변</a> &nbsp;&nbsp;
 		</tr>
 	</table>
 </body>

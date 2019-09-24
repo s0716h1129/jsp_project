@@ -11,8 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.study.jsp.command.BContentCommand;
+import com.study.jsp.command.BDeleteCommand;
 import com.study.jsp.command.BListCommand;
 import com.study.jsp.command.BListSerchCommand;
+import com.study.jsp.command.BModifyCommand;
+import com.study.jsp.command.BReplyCommand;
+import com.study.jsp.command.BReplyViewCommand;
 import com.study.jsp.command.BWriteCommand;
 import com.study.jsp.command.PCommand;
 
@@ -74,10 +78,33 @@ public class PFrontController extends HttpServlet {
 			command = new BListSerchCommand();
 			command.execute(request, response);
 			viewPage = "BList.jsp";
-		}else if (com.equals("/bContent_view.do")) {
+		} else if (com.equals("/bContent_view.do")) {
 			command = new BContentCommand();
 			command.execute(request, response);
 			viewPage = "BContent_view.jsp";
+		} else if (com.equals("/bModify_view.do")) {
+			command = new BContentCommand();
+			command.execute(request, response);
+			viewPage = "BModify_view.jsp";
+		} else if (com.equals("/bModify.do")) {
+			command = new BModifyCommand();
+			command.execute(request, response);
+			
+			command = new BContentCommand();
+			command.execute(request, response);
+			viewPage = "BContent_view.jsp";
+		} else if (com.equals("/bDelete.do")) {
+			command = new BDeleteCommand();
+			command.execute(request, response);
+			viewPage = "bList.do";
+		} else if (com.equals("/bReply_view.do")) {
+			command = new BReplyViewCommand();
+			command.execute(request, response);
+			viewPage = "BReply_view.jsp";
+		} else if (com.equals("/bReply.do")) {
+			command = new BReplyCommand();
+			command.execute(request, response);
+			viewPage = "bList.do";
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);
