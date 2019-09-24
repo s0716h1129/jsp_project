@@ -121,19 +121,9 @@ public class BDao {
 		try {
 			con = dataSource.getConnection();
 			
-			String query = "";
-			
-			if (bSerch[0].equals("sname")) {
-				query = "select * from mvc_board where bType = ? and bname = ? order by bGroup desc, bStep asc";
-			} else {
-				query = "select * from mvc_board where bType = ? and btitle = ? order by bGroup desc, bStep asc";
-			}
-			
+			String query = "select * from mvc_board where bType = ? order by bGroup desc, bStep asc";
 			pstmt = con.prepareStatement(query);
-			for (String type : bType_ser) {
-				pstmt.setString(1, type);
-			}
-			pstmt.setString(2, serch);
+			pstmt.setString(1, bType_ser[0]);
 			resultSet = pstmt.executeQuery();
 			
 			while (resultSet.next()) {
@@ -157,8 +147,28 @@ public class BDao {
 					type = "자료실";
 				}
 				
-				dto = new BDto(bId, bName, bTitle, bContent, bDate, bHit, bGroup, bStep, bIndent, type);
-				dtos.add(dto);
+				boolean s = false;
+				if (bSerch[0].equals("sname")) {
+					if(bName.contains(serch)) 
+						s = true;
+					else 
+						s = false;
+				} else if (bSerch[0].equals("stitle")){
+					if(bTitle.contains(serch)) 
+						s = true;
+					else 
+						s = false;
+				} else {
+					if(bContent.contains(serch))
+						s = true;
+					else 
+						s = false;
+				}
+				if (s == true) {
+					dto = new BDto(bId, bName, bTitle, bContent, bDate, bHit, bGroup, bStep, bIndent, type);
+					dtos.add(dto);
+				}
+				
 			}
 			
 		} catch (Exception e) {

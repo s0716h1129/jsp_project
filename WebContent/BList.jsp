@@ -10,7 +10,7 @@
 </head>
 <body>
 	<h1> 게시판 </h1>
-		<form action="bListSerch.do">
+	<form action="bListSerch.do">
 		<select name=bType_ser>
 			<option value="t1"> 공지사항 </option>
 			<option value="t2"> 자유 게시판 </option>
@@ -19,11 +19,12 @@
 		<select name=bSer_t>
 			<option value="sname"> 작성자 </option>
 			<option value="stitle"> 제목 </option>
+			<option value="scontent">내용 </option>
 		</select>
 		<input type="text" name="serch" size = "30" />
 		<input type="submit" value="검색">
 		<input type="button" value="새로고침" onclick="javascript:window.location='bList.do'">
-		</form>
+	</form>
 		
 	
 	<table width="500" cellpadding="0" cellspacing="0" border="1">
