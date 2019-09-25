@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.study.jsp.command.BCommentCommand;
 import com.study.jsp.command.BContentCommand;
 import com.study.jsp.command.BDeleteCommand;
 import com.study.jsp.command.BListCommand;
@@ -18,6 +19,8 @@ import com.study.jsp.command.BModifyCommand;
 import com.study.jsp.command.BReplyCommand;
 import com.study.jsp.command.BReplyViewCommand;
 import com.study.jsp.command.BWriteCommand;
+import com.study.jsp.command.MManagerCommand;
+import com.study.jsp.command.MMember_viewCommand;
 import com.study.jsp.command.PCommand;
 
 @WebServlet("*.do")
@@ -57,11 +60,19 @@ public class PFrontController extends HttpServlet {
 			viewPage = "MJoin.jsp";
 		} else if (com.equals("/mMain.do")) {
 			viewPage = "MMain.jsp";
+		} else if (com.equals("/mManager.do")) {
+			command = new MManagerCommand();
+			command.execute(request, response);
+			viewPage = "MManager.jsp";
 		} else if (com.equals("/mLogout.do")) {
 			session.invalidate();
 			viewPage = "MLogin.jsp";
 		} else if (com.equals("/mDelete.do")) {
 			viewPage = "MDelete.jsp";
+		} else if (com.equals("/mMember_view.do")) {
+			command = new MMember_viewCommand();
+			command.execute(request, response);
+			viewPage = "MMember_view.jsp";
 		}
 		
 		else if(com.equals("/bWrite_view.do")) {
@@ -82,6 +93,10 @@ public class PFrontController extends HttpServlet {
 			command = new BContentCommand();
 			command.execute(request, response);
 			viewPage = "BContent_view.jsp";
+		} else if (com.equals("/bDelete.do")) {
+			command = new BDeleteCommand();
+			command.execute(request, response);
+			viewPage = "bList.do";
 		} else if (com.equals("/bModify_view.do")) {
 			command = new BContentCommand();
 			command.execute(request, response);
@@ -105,6 +120,13 @@ public class PFrontController extends HttpServlet {
 			command = new BReplyCommand();
 			command.execute(request, response);
 			viewPage = "bList.do";
+		} else if (com.equals("/bComment.do")) {
+			command = new BCommentCommand();
+			command.execute(request, response);
+			
+			command = new BContentCommand();
+			command.execute(request, response);
+			viewPage = "BContent_view.jsp";
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);

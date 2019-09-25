@@ -12,7 +12,7 @@ public class BWriteCommand implements PCommand{
 		
 		HttpSession session = request.getSession();
 		
-		String bName = (String)session.getAttribute("id");
+		String bName = (String)session.getAttribute("name");
 		String bTitle = request.getParameter("bTitle");
 		String bContent = request.getParameter("bContent");
 		String bType[] = request.getParameterValues("bType_sel");

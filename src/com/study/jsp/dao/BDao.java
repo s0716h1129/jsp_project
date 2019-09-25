@@ -11,6 +11,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import com.study.jsp.dto.BDto;
+import com.study.jsp.dto.CDto;
 
 public class BDao {
 	
@@ -92,7 +93,6 @@ public class BDao {
 				} else {
 					type = "자료실";
 				}
-
 				BDto dto = new BDto(bId, bName, bTitle, bContent, bDate, bHit, bGroup, bStep, bIndent, type);
 				dtos.add(dto);
 			}
@@ -120,12 +120,19 @@ public class BDao {
 		
 		try {
 			con = dataSource.getConnection();
-			
-			String query = "select * from mvc_board where bType = ? order by bGroup desc, bStep asc";
-			pstmt = con.prepareStatement(query);
-			pstmt.setString(1, bType_ser[0]);
-			resultSet = pstmt.executeQuery();
-			
+			String query = "";
+			if (bType_ser[0].equals("t0")) {
+				query = "select * " +
+						   " from mvc_board " +
+						   " order by bGroup desc, bStep asc";
+				pstmt = con.prepareStatement(query);
+				resultSet = pstmt.executeQuery();
+			} else {
+				query = "select * from mvc_board where bType = ? order by bGroup desc, bStep asc";
+				pstmt = con.prepareStatement(query);
+				pstmt.setString(1, bType_ser[0]);
+				resultSet = pstmt.executeQuery();
+			}
 			while (resultSet.next()) {
 				int bId = resultSet.getInt("bId");
 				String bName = resultSet.getString("bName");
@@ -237,6 +244,73 @@ public class BDao {
 		}
 		return dto;
 		
+	}
+	
+	public CDto bCommentView (String bId) {
+		CDto cdto = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet resultSet = null;
+		
+		try {
+			con = dataSource.getConnection();
+			
+			String query = "select * from mvc_comment where boardId = ?";
+			pstmt = con.prepareStatement(query);
+			pstmt.setInt(1, Integer.parseInt(bId));
+			resultSet = pstmt.executeQuery();
+			
+			if (resultSet.next()) {
+				int boardId = resultSet.getInt("boardId");
+				String cId = resultSet.getString("id");
+				String cName = resultSet.getString("name");
+				String cComment = resultSet.getString("bcomment");
+
+				cdto = new CDto(boardId, cId, cName, cComment);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (resultSet != null) resultSet.close();
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return cdto;
+	}
+	
+	public void bComment(String boardId, String bId, String bName, String bComment) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			con = dataSource.getConnection();
+			String query = "insert into mvc_comment " +
+						   "(boardid, id, name, bcomment) " +
+						   "values " +
+						   "(?, ?, ?, ?)";
+			pstmt = con.prepareStatement(query);
+			pstmt.setInt(1, Integer.parseInt(boardId));
+			pstmt.setString(2, bId);
+			pstmt.setString(3, bName);
+			pstmt.setString(4, bComment);
+			int rn = pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+
 	}
 
 	private void upHit(String strID) {
@@ -432,5 +506,7 @@ public class BDao {
 		}
 		
 	}
+
+	
 
 }

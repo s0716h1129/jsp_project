@@ -13,6 +13,19 @@ public class MDto {
 	public MDto() {
 	}
 	
+	
+	
+	public MDto(String mId, String mName, String mEmail, Timestamp mRdate, String mAddress) {
+		super();
+		this.mId = mId;
+		this.mName = mName;
+		this.mEmail = mEmail;
+		this.mRdate = mRdate;
+		this.mAddress = mAddress;
+	}
+
+
+
 	public MDto(String mId, String mPw, String mName, String mEmail, Timestamp mRdate, String mAddress) {
 		super();
 		this.mId = mId;

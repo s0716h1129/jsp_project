@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.study.jsp.dao.BDao;
 import com.study.jsp.dto.BDto;
+import com.study.jsp.dto.CDto;
 
 public class BContentCommand implements PCommand {
 	@Override
@@ -15,5 +16,8 @@ public class BContentCommand implements PCommand {
 		BDto dto = dao.contentView(bId);
 		
 		request.setAttribute("BContent_view", dto);
+		
+		CDto cdto = dao.bCommentView (bId);
+		request.setAttribute("BComment_view", cdto);
 	}
 }

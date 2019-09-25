@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +17,13 @@
 			</tr>
 			<tr>
 				<td>게시판</td>
-				<td>${BContent_view.bType}</</td>
+				<td>
+					<select name=bType>
+						<option value="t1" <c:if test="${BContent_view.bType eq '공지사항'}">selected="slected" </c:if>>공지사항 </option>
+						<option value="t2" <c:if test="${BContent_view.bType eq '자유 게시판'}">selected="slected"</c:if>> 자유 게시판 </option>
+						<option value="t3"<c:if test="${BContent_view.bType eq '자료실'}">selected="slected" </c:if>> 자료실 </option>
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<td>히트</td>
@@ -24,7 +31,7 @@
 			</tr>
 			<tr>
 				<td>이름</td>
-				<td><input type="text" name="bName" value="${BContent_view.bName}"></td>
+				<td>${BContent_view.bName}</td>
 			</tr>
 			<tr>
 				<td>제목</td>

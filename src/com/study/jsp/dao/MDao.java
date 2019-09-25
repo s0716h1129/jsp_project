@@ -3,14 +3,28 @@ package com.study.jsp.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import com.study.jsp.dto.BDto;
 import com.study.jsp.dto.MDto;
 
 public class MDao {
+	DataSource dataSource;
+	
+	public MDao() {
+		try {
+			Context context = new InitialContext();
+			dataSource = (DataSource) context.lookup("java:comp/env/jdbc/Oracle11g");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static final int MEMBER_NONEXISTENT = 0;
 	public static final int MEMBER_EXISTENT = 1;
 	public static final int MEMBER_JOIN_FAIL = 0;
@@ -21,9 +35,6 @@ public class MDao {
 	public static final int MEMBER_DELETE= 1;
 	
 	private static MDao instance = new MDao();
-	
-	private MDao() {
-	}
 	
 	public static MDao getInstance() {
 		return instance;
@@ -176,6 +187,35 @@ public class MDao {
 
 		return ri;
 	}
+	
+	public void deleteMeber(String mId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			con = getConnection();
+			String query = "delete from members where Id = ?";
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, mId);
+			int rn = pstmt.executeUpdate();
+			
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(con != null) con.close();
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (Exception e2){
+				e2.printStackTrace();
+			}
+		}
+		
+	}
+	
 
 	private Connection getConnection() {
 		Context context = null;
@@ -192,5 +232,83 @@ public class MDao {
 		}
 		return con;
 	}
+
+	public ArrayList<MDto> list() {
+		ArrayList<MDto> mdtos = new ArrayList<MDto>();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet resultSet = null;
+		
+		try {
+			con = dataSource.getConnection();
+			
+			String query = "select * " +
+						   " from members " +
+						   " order by id asc";
+			pstmt = con.prepareStatement(query);
+			resultSet = pstmt.executeQuery();
+			
+			while(resultSet.next()) {
+				String mId = resultSet.getString("id");
+				String mName = resultSet.getString("name");
+				String mEmail = resultSet.getString("email");
+				Timestamp mRdate = resultSet.getTimestamp("rdate");
+				String mAddress = resultSet.getString("Address");
+				MDto mdto = new MDto(mId, mName, mEmail, mRdate, mAddress);
+				mdtos.add(mdto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (resultSet != null) resultSet.close();
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return mdtos;
+	}
+
+	public MDto memberView(String Id) {
+		MDto mdto = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet resultSet = null;
+		
+		try {
+			con = dataSource.getConnection();
+			
+			String query = "select * from members where Id = ?";
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, Id);
+			resultSet = pstmt.executeQuery();
+			
+			if (resultSet.next()) {
+				String mId = resultSet.getString("Id");
+				String mName = resultSet.getString("Name");
+				String mEmail = resultSet.getString("email");
+				Timestamp mRdate = resultSet.getTimestamp("rdate");
+				String mAddress = resultSet.getString("address");
+				
+				mdto = new MDto(mId, mName, mEmail, mRdate, mAddress);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (resultSet != null) resultSet.close();
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return mdto;
+	}
+	
 }
 

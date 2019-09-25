@@ -35,7 +35,7 @@
 				var result = JSON.parse(json);
 				if (result.code == "success") {
 					alert(result.desc)
-					window.location.replace("mMain.do");
+					window.location.replace("mLogin.do");
 				}
 			}
 		});

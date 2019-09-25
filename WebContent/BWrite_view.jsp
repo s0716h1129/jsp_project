@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,6 +9,7 @@
 <%
 String bName = (String)session.getAttribute("name");
 String bId = (String)session.getAttribute("id");
+pageContext.setAttribute("bId", bId);
 %>
 </head>
 <body>
@@ -22,8 +24,10 @@ String bId = (String)session.getAttribute("id");
 				<td> 게시판 </td>
 				<td>
 					<select name=bType_sel>
-						<option value="t1"> 공지사항 </option>
-						<option value="t2" selected=selected> 자유 게시판 </option>
+						<c:if test="${bId eq 'manager'}">
+							<option value="t1" selected=selected> 공지사항 </option>
+						</c:if>
+						<option value="t2"> 자유 게시판 </option>
 						<option value="t3"> 자료실 </option>
 					</select>
 				</td>
